@@ -1,12 +1,9 @@
 'use client'
-import React, { useEffect, useRef, useState } from "react";
-import * as FaceDetection from "@mediapipe/face_detection";
-import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
-import FacialAnalysisView from "@/components/facial-analysis-view";
-import ControlPanel from "@/components/control-panel";
-// import annyang from "annyang";
+import React, { useState } from "react";
+import FacialAnalysisView from "@/components/FacialAnalysisView";
+import ControlPanel from "@/components/ControlPanel";
 
-export default function Home() {
+const Home = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [detectionResults, setDetectionResults] = useState({
     faceCount: 0,
@@ -15,46 +12,6 @@ export default function Home() {
     eyeGaze: "center",
     gender: "unknown",
   })
-
-  useEffect(() => {
-    async function setupCamera() {
-      if (!videoRef.current) return;
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      videoRef.current.srcObject = stream;
-    }
-
-    async function loadModels() {
-      const faceDetector = new FaceDetection({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`,
-      });
-
-      faceDetector.setOptions({ model: "short", minDetectionConfidence: 0.5 });
-      const ctx = canvasRef.current.getContext("2d");
-
-      setInterval(async () => {
-        if (!videoRef.current) return;
-        const results = await faceDetector.send({ image: videoRef.current });
-        // const landmarks = await faceLandmarker.detect(videoRef.current);
-
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        ctx.strokeStyle = "red";
-        ctx.lineWidth = 3;
-
-        // if (results.detections.length > 0) {
-        //   results.detections.forEach((face) => {
-        //     const bbox = face.boundingBox;
-        //     ctx.strokeRect(bbox.xCenter - bbox.width / 2, bbox.yCenter - bbox.height / 2, bbox.width, bbox.height);
-        //   });
-
-        //   detectFeatures(landmarks);
-        // }
-      }, 100);
-    }
-
-    setupCamera();
-    loadModels();
-  }, [])
-
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-4 md:p-8 bg-gray-50">
@@ -78,3 +35,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default Home;
